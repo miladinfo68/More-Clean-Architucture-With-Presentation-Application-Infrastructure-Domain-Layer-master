@@ -47,9 +47,7 @@ public class TradeController : ControllerBase
         return Ok(lastTrades);
     }
 
-    //
-
-
+    ///////////////////////////////////
 
     //[HttpGet("LastTrades")]
     //public async Task<ApiResponse<IEnumerable<TradeDto>>> Get(CancellationToken cancellationToken)
