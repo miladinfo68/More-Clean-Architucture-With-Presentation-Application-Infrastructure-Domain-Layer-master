@@ -3,6 +3,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using System.Data;
 using System.Data.SqlClient;
+using CliApp;
 using CliApp.Models;
 using CliApp.Services;
 
@@ -17,10 +18,10 @@ using IHost host = Host.CreateDefaultBuilder(args)
             .AddTransient<IDbConnection>(sp => new SqlConnection(ConnectionString))
             .AddScoped(typeof(ITradeService<Trade>), typeof(TradeService))
             .AddScoped<ITestService, TestService>();
-            //.AddHttpClient<ITradeService<Trade>>(client =>
-            //  {
-            //      client.BaseAddress = new Uri("http://localhost:5123");
-            //  });
+        //.AddHttpClient<ITradeService<Trade>>(client =>
+        //  {
+        //      client.BaseAddress = new Uri("http://localhost:5123");
+        //  });
     })
     .Build();
 
@@ -66,8 +67,8 @@ while (!token.IsCancellationRequested)
 
     //await AppDi.DirectBulkInsertTrades(host, token, number);
 
-    var topTrades = await AppDi.DirectGetRangeTrades(host, number, token);
-    var ids = topTrades?.ToArray();
+    //var topTrades = await AppDi.DirectGetRangeTrades(host, number, token);
+    //var ids = topTrades?.ToArray();
 
     //await AppDi.DirectGetTrade(host, ids[0], token);
 
@@ -86,14 +87,22 @@ while (!token.IsCancellationRequested)
 
     //await AppDi.MuchBetterParallelAsyncRequests(ids, token);
 
-    await AppDi.ParallelAsyncRequestsByAsyncForeEachWeakerThanSemaphoreSlime(ids, token);
+    //await AppDi.ParallelAsyncRequestsByAsyncForeEachWeakerThanSemaphoreSlime(ids, token);
 
-    await AppDi.BestParallelAsyncRequestsBySemaphoreSlim(ids, token);
-
-
+    //await AppDi.BestParallelAsyncRequestsBySemaphoreSlim(ids, token);
 
 
-    Console.WriteLine("-----------------wwwww---------------------\r\n");
+
+    //Tricky Examples
+
+    //await Examples.Use_IAsyncEnumerable_YieldReturn();
+
+    //await Examples.Use_Foreach_Delay();
+
+    //await Examples.Use_TaskYield_InLogRunningTasks();
+    
+    Examples.Use_DifferenceBetweenCreateTaskByRunOrFactory();
+
 
 
 }
@@ -105,5 +114,28 @@ Console.WriteLine("-----------------xxxxx---------------------\r\n");
 
 
 await host.RunAsync();
+
+
+
+
+
+
+
+
+
+async Task LongRunningOperationAsync()
+{
+    for (int i = 1; i <= 10; i++)
+    {
+        Console.WriteLine($"Long-running operation: {i}");
+        // Yield to allow other tasks to run
+        await Task.Yield();
+    }
+}
+
+static void DoOtherWork() => Console.WriteLine($"Doing other work...");
+
+
+
 
 
